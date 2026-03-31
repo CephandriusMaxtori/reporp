@@ -3,8 +3,13 @@ name: Build Minecraft Resource Pack
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # This adds the "button" to the Actions tab
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type (e.g. Release, Alpha, Beta)'
+        required: true
+        default: 'Release'
 
 jobs:
   build:
@@ -24,13 +29,12 @@ jobs:
     - name: Grant Execute Permission for Gradlew
       run: chmod +x gradlew
 
-    - name: Build Resource Pack with Gradle
-      run: ./gradlew build
+    - name: Build Resource Pack
+      # You can even use the input from the button in your build!
+      run: ./gradlew build -PbuildType=${{ github.event.inputs.build_type }}
 
     - name: Upload Pack Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ResourcePack-Build
-        # This path depends on your build.gradle settings. 
-        # Usually, Gradle puts outputs in build/libs/ or build/distributions/
+        name: ResourcePack-${{ github.event.inputs.build_type || 'Manual-Build' }}
         path: build/distributions/*.zip
