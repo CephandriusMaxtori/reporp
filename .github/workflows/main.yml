@@ -1,19 +1,15 @@
-name: Build Minecraft Resource Pack
+name: Build and Release Resource Pack
 
 on:
   push:
     branches: [ "main" ]
-  # This adds the "button" to the Actions tab
-  workflow_dispatch:
-    inputs:
-      build_type:
-        description: 'Build Type (e.g. Release, Alpha, Beta)'
-        required: true
-        default: 'Release'
+  workflow_dispatch: # The manual button
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Important: Allows the action to create a Release
 
     steps:
     - name: Checkout Repository
@@ -26,15 +22,24 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
-    - name: Grant Execute Permission for Gradlew
+    - name: Grant Execute Permission
       run: chmod +x gradlew
 
-    - name: Build Resource Pack
-      # You can even use the input from the button in your build!
-      run: ./gradlew build -PbuildType=${{ github.event.inputs.build_type }}
+    - name: Build with Gradle
+      run: ./gradlew build
 
-    - name: Upload Pack Artifact
-      uses: actions/upload-artifact@v4
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: ResourcePack-${{ github.event.inputs.build_type || 'Manual-Build' }}
-        path: build/distributions/*.zip
+        # This tag name will update every time you push
+        tag_name: latest
+        name: Latest Resource Pack Build
+        body: |
+          Automated build of the resource pack.
+          Generated from commit: ${{ github.sha }}
+        draft: false
+        prerelease: false
+        # Adjust this path to match where your Gradle zip actually ends up
+        files: build/distributions/*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
