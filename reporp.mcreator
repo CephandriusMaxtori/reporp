@@ -19,18 +19,19 @@
   "workspaceSettings": {
     "modid": "reporp",
     "modName": "reporp",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "reporp",
-    "author": "MCreator",
+    "author": "wit",
     "websiteURL": "https://mcreator.net",
-    "license": "Not specified",
+    "license": "GNU General Public License version 2 (GPLv2)",
     "serverSideOnly": false,
     "requiredMods": [],
     "dependencies": [],
     "dependants": [],
     "mcreatorDependencies": [],
     "currentGenerator": "resourcepack-1.21.8",
-    "modElementsPackage": "net.mcreator.reporp"
+    "credits": "Created using mod maker MCreator - https://mcreator.net/about",
+    "modElementsPackage": "net.repo.reporp"
   },
   "mcreatorVersion": 202500345720
 }
